@@ -1,0 +1,4 @@
+[
+[1, {"_id":1,"MachineId":1,"InnerPort":"20001","HttpPort":"8080","WatcherPort":"9100","ServiceMeshAddr":"127.0.0.1:8500"}],
+[2, {"_id":2,"MachineId":1,"InnerPort":"20002","HttpPort":"8081","WatcherPort":"9101","ServiceMeshAddr":"127.0.0.1:8500"}],
+]
