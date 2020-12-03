@@ -8,3 +8,9 @@ scrape_configs:
       static_configs:
         - targets:
             - 192.168.2.167:9100
+    - job_name: node_192.168.2.167:9200
+      scrape_interval: 5s
+      metrics_path: ""
+      static_configs:
+        - targets:
+            - 192.168.2.167:9200

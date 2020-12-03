@@ -43,9 +43,10 @@ func (c *StartProcessConfig) GetID() int32 {
 }
 
 type StartMachineConfig struct {
-	ID      int32  `json:"_id"`
-	InnerIP string `json:"InnerIP"`
-	OuterIP string `json:"OuterIP"`
+	ID       int32  `json:"_id"`
+	InnerIP  string `json:"InnerIP"`
+	OuterIP  string `json:"OuterIP"`
+	NodePort string `json:"NodePort"`
 }
 
 func (c *StartMachineConfig) GetID() int32 {
@@ -60,6 +61,7 @@ type ServiceConfig struct {
 	InnerPort         string `json:"InnerPort"`
 	HttpPort          string `json:"HttpPort"`
 	WatcherPort       string `json:"WatcherPort"`
+	NodePort          string `json:"NodePort"`
 }
 
 type ConfigManager struct {
@@ -177,6 +179,7 @@ func (cm *ConfigManager) CombineService() {
 
 		service.InnerIP = machineConfig.InnerIP
 		service.OuterIP = machineConfig.OuterIP
+		service.NodePort = machineConfig.NodePort
 		service.HttpPort = processConfig.HttpPort
 		service.WatcherPort = processConfig.WatcherPort
 		service.InnerPort = processConfig.InnerPort

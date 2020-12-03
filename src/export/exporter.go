@@ -20,7 +20,7 @@ type PrometheusGlobal struct {
 type PrometheusScrapeConfig struct {
 	JobName        string                    `yaml:"job_name"`
 	ScrapeInterval time.Duration             `yaml:"scrape_interval"`
-	MetricsPath    string                    `yaml:"metrics_path"`
+	MetricsPath    string                    `yaml:"metrics_path,omitempty"`
 	StaticConfigs  []*PrometheusStaticConfig `yaml:"static_configs"`
 }
 
@@ -53,15 +53,30 @@ func NewPrometheusExporter() *PrometheusExporter {
 
 func (ce *PrometheusExporter) WriteToFile(configs config.CombinedServices, path string) {
 	mapServiceAddr := make(map[string]bool)
+	mapServiceNode := make(map[string]bool)
 
 	for _, config := range configs {
 		mapServiceAddr[fmt.Sprintf("%s:%s", config.InnerIP, config.WatcherPort)] = true
+		mapServiceNode[fmt.Sprintf("%s:%s", config.InnerIP, config.NodePort)] = true
 	}
 
 	// generate watch_service
 	for addr := range mapServiceAddr {
 		scrapeConfig := &PrometheusScrapeConfig{
 			JobName:        addr,
+			ScrapeInterval: time.Second * 5,
+			MetricsPath:    "/metrics",
+			StaticConfigs:  make([]*PrometheusStaticConfig, 0),
+		}
+
+		scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &PrometheusStaticConfig{Targets: []string{addr}})
+		ce.cse.ScrapeConfigs = append(ce.cse.ScrapeConfigs, scrapeConfig)
+	}
+
+	// generate node_exporter
+	for addr := range mapServiceNode {
+		scrapeConfig := &PrometheusScrapeConfig{
+			JobName:        fmt.Sprintf("node_%s", addr),
 			ScrapeInterval: time.Second * 5,
 			MetricsPath:    "/metrics",
 			StaticConfigs:  make([]*PrometheusStaticConfig, 0),
