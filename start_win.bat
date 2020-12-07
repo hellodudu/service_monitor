@@ -2,7 +2,7 @@
 REM 后续命令使用的是：UTF-8编码
 chcp 65001
 echo .
-echo 停止consul服务...
+echo 停止prometheus服务...
 docker-compose down
 
 REM "转换txt配置文件为prometheus.yml..."

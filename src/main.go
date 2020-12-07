@@ -18,8 +18,8 @@ var importerPath string
 var exporterPath string
 
 func init() {
-	flag.StringVar(&importerPath, "import_path", "../test/scene", "待转换txt路径")
-	flag.StringVar(&exporterPath, "export_path", "../test/consul", "输出prometheus.yml路径")
+	flag.StringVar(&importerPath, "import_path", "../config/scene/", "待转换txt路径")
+	flag.StringVar(&exporterPath, "export_path", "../config/prometheus/", "输出prometheus.yml路径")
 	initLogger("prometheus_convertor")
 }
 

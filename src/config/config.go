@@ -36,6 +36,7 @@ type StartProcessConfig struct {
 	InnerPort   string `json:"InnerPort"`
 	HttpPort    string `json:"HttpPort"`
 	WatcherPort string `json:"WatcherPort"`
+	ProcessName string `json:"ProcessName"`
 }
 
 func (c *StartProcessConfig) GetID() int32 {
@@ -62,6 +63,7 @@ type ServiceConfig struct {
 	HttpPort          string `json:"HttpPort"`
 	WatcherPort       string `json:"WatcherPort"`
 	NodePort          string `json:"NodePort"`
+	ProcessName       string `json:"ProcessName"`
 }
 
 type ConfigManager struct {
@@ -183,6 +185,7 @@ func (cm *ConfigManager) CombineService() {
 		service.HttpPort = processConfig.HttpPort
 		service.WatcherPort = processConfig.WatcherPort
 		service.InnerPort = processConfig.InnerPort
+		service.ProcessName = processConfig.ProcessName
 
 		cm.mapCombinedService[service.ID] = service
 	}
