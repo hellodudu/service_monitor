@@ -24,3 +24,16 @@ services:
         - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
         - ./config/prometheus/host.json:/etc/prometheus/host.json
         - ./data/prometheus:/prometheus 
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./config/loki/:/etc/loki
+      - ./data/loki/:/tmp/loki
+    command: -config.file=/etc/loki/loki-local-config.yaml
+    restart: unless-stopped
+    depends_on:
+      - grafana
