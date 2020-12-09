@@ -2,15 +2,8 @@ global:
     scrape_interval: 15s
     evaluation_interval: 15s
 scrape_configs:
-    - job_name: 进程1
-      scrape_interval: 5s
-      metrics_path: /metrics
-      static_configs:
-        - targets:
-            - 192.168.1.137:9100
-    - job_name: node_进程1
-      scrape_interval: 5s
-      metrics_path: /metrics
-      static_configs:
-        - targets:
-            - 192.168.1.137:9200
+    - job_name: '监控服务列表'
+      file_sd_configs:
+        - files:
+          - /etc/prometheus/host.json
+          refresh_interval: 10s 

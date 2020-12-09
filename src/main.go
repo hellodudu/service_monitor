@@ -51,6 +51,6 @@ func main() {
 
 	// generate consul's service.json
 	ce := export.NewPrometheusExporter()
-	destPath := fmt.Sprintf("%sprometheus.yml", exporterPath)
+	destPath := fmt.Sprintf("%shost.json", exporterPath)
 	ce.WriteToFile(cm.GetCombinedService(), destPath)
 }

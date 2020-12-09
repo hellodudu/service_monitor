@@ -22,4 +22,5 @@ services:
         - --config.file=/etc/prometheus/prometheus.yml 
     volumes:
         - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        - ./config/prometheus/host.json:/etc/prometheus/host.json
         - ./data/prometheus:/prometheus 

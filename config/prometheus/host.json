@@ -1,0 +1,43 @@
+[{
+    "targets": ["192.168.2.26:9100"],
+    "labels": {
+        "group": "ET服务",
+        "app": "c#",
+        "hostname": "进程1"
+    }
+}, {
+    "targets": ["192.168.1.137:9100"],
+    "labels": {
+        "group": "ET服务",
+        "app": "c#",
+        "hostname": "进程2"
+    }
+}, {
+    "targets": ["192.168.2.26:9200"],
+    "labels": {
+        "group": "物理机节点",
+        "app": "node",
+        "hostname": "进程1"
+    }
+}, {
+    "targets": ["192.168.1.137:9200"],
+    "labels": {
+        "group": "物理机节点",
+        "app": "node",
+        "hostname": "进程2"
+    }
+}, {
+    "targets": ["192.168.1.244:9200"],
+    "labels": {
+        "group": "物理机节点",
+        "app": "node",
+        "hostname": "qiji-ubuntu"
+    }
+}, {
+    "targets": ["192.168.1.139:9200"],
+    "labels": {
+        "group": "物理机节点",
+        "app": "node",
+        "hostname": "wulifeng-windows"
+    }
+}]

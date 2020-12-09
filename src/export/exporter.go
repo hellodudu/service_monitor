@@ -1,6 +1,7 @@
 package export
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"main/src/config"
@@ -35,7 +36,19 @@ type PrometheusServiceExporter struct {
 }
 
 type PrometheusExporter struct {
-	cse *PrometheusServiceExporter
+	cse  *PrometheusServiceExporter
+	host []*HostJsonConfig
+}
+
+type HostJsonLabels struct {
+	Group    string `json:"group"`
+	App      string `json:"app"`
+	Hostname string `json:"hostname"`
+}
+
+type HostJsonConfig struct {
+	Targets []string        `json:"targets"`
+	Labels  *HostJsonLabels `json:"labels"`
 }
 
 func NewPrometheusExporter() *PrometheusExporter {
@@ -48,6 +61,7 @@ func NewPrometheusExporter() *PrometheusExporter {
 
 			ScrapeConfigs: make([]*PrometheusScrapeConfig, 0),
 		},
+		host: make([]*HostJsonConfig, 0),
 	}
 }
 
@@ -61,42 +75,73 @@ func (ce *PrometheusExporter) WriteToFile(configs config.CombinedServices, path 
 	}
 
 	// generate watch_service
+	// for addr, proName := range mapServiceAddr {
+	// 	scrapeConfig := &PrometheusScrapeConfig{
+	// 		JobName:        proName,
+	// 		ScrapeInterval: time.Second * 5,
+	// 		MetricsPath:    "/metrics",
+	// 		StaticConfigs:  make([]*PrometheusStaticConfig, 0),
+	// 	}
+
+	// 	scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &PrometheusStaticConfig{Targets: []string{addr}})
+	// 	ce.cse.ScrapeConfigs = append(ce.cse.ScrapeConfigs, scrapeConfig)
+	// }
+
+	// // generate node_exporter
+	// for addr, proName := range mapServiceNode {
+	// 	scrapeConfig := &PrometheusScrapeConfig{
+	// 		JobName:        fmt.Sprintf("node_%s", proName),
+	// 		ScrapeInterval: time.Second * 5,
+	// 		MetricsPath:    "/metrics",
+	// 		StaticConfigs:  make([]*PrometheusStaticConfig, 0),
+	// 	}
+
+	// 	scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &PrometheusStaticConfig{Targets: []string{addr}})
+	// 	ce.cse.ScrapeConfigs = append(ce.cse.ScrapeConfigs, scrapeConfig)
+	// }
+
+	// data, err := yaml.Marshal(ce.cse)
+	// if err != nil {
+	// 	log.Fatal().Err(err).Msg("yaml marshal failed")
+	// }
+
 	for addr, proName := range mapServiceAddr {
-		scrapeConfig := &PrometheusScrapeConfig{
-			JobName:        proName,
-			ScrapeInterval: time.Second * 5,
-			MetricsPath:    "/metrics",
-			StaticConfigs:  make([]*PrometheusStaticConfig, 0),
+		hostConfig := &HostJsonConfig{
+			Targets: []string{addr},
+			Labels: &HostJsonLabels{
+				Group:    "ET服务",
+				App:      "c#",
+				Hostname: fmt.Sprintf("%sET服务", proName),
+			},
 		}
 
-		scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &PrometheusStaticConfig{Targets: []string{addr}})
-		ce.cse.ScrapeConfigs = append(ce.cse.ScrapeConfigs, scrapeConfig)
+		ce.host = append(ce.host, hostConfig)
 	}
 
-	// generate node_exporter
 	for addr, proName := range mapServiceNode {
-		scrapeConfig := &PrometheusScrapeConfig{
-			JobName:        fmt.Sprintf("node_%s", proName),
-			ScrapeInterval: time.Second * 5,
-			MetricsPath:    "/metrics",
-			StaticConfigs:  make([]*PrometheusStaticConfig, 0),
+		hostConfig := &HostJsonConfig{
+			Targets: []string{addr},
+			Labels: &HostJsonLabels{
+				Group:    "物理机节点",
+				App:      "node",
+				Hostname: fmt.Sprintf("%s节点", proName),
+			},
 		}
 
-		scrapeConfig.StaticConfigs = append(scrapeConfig.StaticConfigs, &PrometheusStaticConfig{Targets: []string{addr}})
-		ce.cse.ScrapeConfigs = append(ce.cse.ScrapeConfigs, scrapeConfig)
+		ce.host = append(ce.host, hostConfig)
 	}
 
-	data, err := yaml.Marshal(ce.cse)
+	data, err := json.Marshal(ce.host)
 	if err != nil {
-		log.Fatal().Err(err).Msg("yaml marshal failed")
+		log.Fatal().Err(err).Msg("host config marshal failed")
 	}
 
 	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
-		log.Fatal().Err(err).Msg("write prometheus.yml failed")
+		log.Fatal().Err(err).Msg("write host.config failed")
 	}
 
-	log.Info().Str("path", path).Msg("write prometheus.yml successful")
+	log.Info().Str("path", path).Msg("write host.config successful")
 }
 
 // test
